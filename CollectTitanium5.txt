@@ -1,0 +1,128 @@
+extern void object::CollectTitanium5()
+{
+	while(true){
+		object item;
+		object building;
+		
+		item = radar(TitaniumOre);
+		building = radar(Converter);
+		
+		if (load!=null) {
+			drop();
+			 
+		}
+		goto(item.position);
+		grab();
+		checkTemp();
+		
+		
+		goto(building.position);
+		drop();
+		move(-2);
+		wait (15);
+		checkTemp();
+		move(2);
+		grab();
+		goto(space(position,6,50,6));
+		drop();
+		if(shieldLevel < 0.45)
+		{
+			object rep = radar(RepairCenter);
+			 
+			if(rep != null)
+			{
+				goto(rep.position,5);
+				 
+				while(shieldLevel < 1)
+				    wait(1);
+			}
+		}
+	}
+	
+	
+}
+void object::Refuel()
+{
+	message("Energy level low. Refueling");
+	 
+	while(rechargeBatteries() == false and switchBattery() == false)
+	{
+		message("Warning.  No energy sources found! Hibernating");
+		wait(25);
+	}
+	 
+	message("Recharge complete. Resuming operation", DisplayInfo);
+}
+ 
+bool object::rechargeBatteries()
+{
+	int fuelStation[];
+	fuelStation[0] = PowerStation; 
+	fuelStation[1] = PowerCaptor;
+	 
+	object powerSource = radar(fuelStation);  
+	 
+	if(powerSource != null)
+	{
+		goto(powerSource.position);
+		
+		 
+		message("Recharging at " + powerSource.category + "...",DisplayInfo);
+		 
+		while(energyCell.energyLevel < 1)
+		    wait(1);
+		 
+		return true;
+	}
+	 
+	return false;
+}
+ 
+bool object::switchBattery()
+{
+	object cell;
+	float min = 0;
+	 
+	while( (cell = radar(PowerCell,0,360,min)) != null )
+	{
+		min = distance2d(position,cell.position) + 0.5;
+		 
+		if(cell.energyLevel >= 0.5)
+		{
+			goto(cell.position);    
+			 
+			message("Swapping PowerCell",DisplayInfo);
+			 
+			grab();   
+			drop(Behind);
+			 
+			grab(EnergyCell);  
+			drop();
+			 
+			grab(Behind);
+			drop(EnergyCell);
+			 
+			return true;
+		}
+	}
+	 
+	return false;
+}
+void object::checkTemp()
+{
+	boolean overheat = false;
+	point safeSpot;
+	if(temperature > 0.8)
+	    overheat = true;
+	if(temperature < 0.2)
+	    overheat = false;
+	
+	if(overheat and topo(position) > 1)
+	{
+		safeSpot = flatspace ( this.position, 1, 1 );
+		goto(safeSpot,5);
+		jet(-1);
+	}
+	    
+	
+}

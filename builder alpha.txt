@@ -1,0 +1,36 @@
+extern void object::BUIDLERalpha()
+{
+	    
+	
+	GrabTit();
+	    goto(space(this.position, 8, 50, 15));
+	    drop();
+	    if (canbuild(Converter)) {
+		
+		 build(Converter); 
+	}
+	    if (canbuild(BotFactory)) { build(BotFactory); }
+	    if (canbuild(ResearchCenter)) { build(ResearchCenter);}
+	    if (canbuild(RadarStation )) { build(RadarStation ); }
+	    if (canbuild(RepairCenter)) { build(RepairCenter); }
+	    
+	    
+}
+    
+
+    
+
+
+void GrabTit()
+{
+	object item;
+	item = radar(Titanium);
+	if (item == null) {
+		message("No TITANIUM on planet, waiting", DisplayInfo);
+		wait(1);
+	}
+	goto(item.position);
+	grab();
+	
+}
+ 

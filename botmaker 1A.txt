@@ -1,0 +1,44 @@
+extern void object::BotCreate()
+{
+	 
+	object titaniumCube, botFactory,powerCell, recharge;
+	
+	titaniumCube=radar(Titanium);
+	botFactory=radar(BotFactory);
+	powerCell=radar(PowerCell);
+	recharge=radar(PowerStation);
+	goto(titaniumCube.position);
+	grab();
+	goto(botFactory.position);
+	move(1);
+	drop(InFront);
+	move(-3);
+	botFactory.factory(LeggedGrabber);
+	wait(25);
+	goto(powerCell.position);
+	grab();
+	if(powerCell.energyLevel!=1){
+		if(PowerStation==1){
+			goto(recharge.position);
+			while(powerCell.energyLevel!=1){
+				wait(0.1);
+			}
+		}
+		else{
+			turn(-90);
+			move(15);
+			drop();
+			turn(180);
+			move(15);
+		}
+	}
+	goto(botFactory.position);
+	drop();
+	move(-2);
+	turn(90);
+	move(5);
+	turn(-90);
+	move(5);
+	message("Awaiting further commands!");
+	 
+}

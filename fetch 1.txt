@@ -1,0 +1,27 @@
+
+
+extern void object::Fetch()
+{
+	point  start;          // variable for initial pos.
+	object item;           // info. about objects
+	object item2;
+	
+	start = position;            // store initial position
+	item2 = radar(Titanium);      
+	goto(item2.position);
+	grab();
+	
+	if ( energyCell.energyLevel < 0.25 )
+	{
+		item = radar(PowerPlant); // look for station
+		goto(item.position);   // go to the power station
+		wait(1);            // wait until recharged
+	}
+	
+	goto(start);           // go back to initial pos.
+	drop();
+	message("Object fetched");
+}
+
+
+

@@ -1,0 +1,79 @@
+extern void object::Universal_test()
+{
+	int enemies[] = { AlienAnt, AlienSpider,AlienWorm, AlienWasp, PracticeBot };
+	object item = radar(enemies);
+	if (radar(enemies )!= null) {
+		message("Hostiles detected! Scramblin`!"); 
+		jet(0.2);
+		aim(-20);
+		while(position.z<10){
+			wait(0.2);
+		}
+	} else {
+		message ("sky is clear.");
+		wait(99);
+	}
+	   
+	
+	
+	while (true)
+	{
+		
+		while (radar(enemies, 0, 360, 5, 20) == null)
+		{
+			turn(direction(item.position));
+			while(position.z<10){
+				jet(1);
+				wait(0.2);
+			}
+			motor(1,1);
+			jet(0);
+			if (position.z-topo(position) < 6)
+			{
+				jet(1);
+			}
+			
+			if (position.z-topo(position) > 9)
+			{
+				jet(-1);
+			}
+			
+			
+		}
+		if (distance(position, item.position) < 30|| distance(position, item.position)> 25 )
+		{
+			turn(direction(item.position));
+			fire(1);
+			if ( energyCell.energyLevel < 0.5 )
+			{BatLev();}
+			
+			
+			
+		}else {
+			move(30);
+		}
+		
+	}
+	
+}
+void HulLev() {
+	object item;          
+	
+	     
+	
+	item = radar(RepairCenter); 
+	goto(item.position,1);   
+	
+	wait(15);
+}
+
+
+
+
+void BatLev() {
+	object station;
+	
+	station = radar(PowerStation); // look for station
+	goto(station.position,1);        // go there
+	wait(5); 
+}

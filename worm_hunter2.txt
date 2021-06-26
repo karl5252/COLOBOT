@@ -1,0 +1,36 @@
+extern void object::Robal_fajter()
+{
+	object item;
+	aim(-20);
+	
+	while (true)
+	{
+		
+		
+		item = radar(AlienWorm);
+		turn(direction(item.position));
+		goto(item.position,1);
+		
+		
+		
+		
+	}
+	item = radar(AlienWorm);
+	turn(direction(item.position));
+	if (distance(position, item.position) <=30)
+	{
+		turn(direction(item.position));
+		fire(1);
+		wait(2);
+	}
+	if ( energyCell.energyLevel < 0.25 )
+	{                               // if so:
+		item = radar(PowerStation); // look for station
+		goto(item.position);        // go there
+		wait(5);                    // wait
+	}
+	
+}
+
+
+

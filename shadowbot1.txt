@@ -1,0 +1,35 @@
+extern void object::Podążaj()
+{
+	while ( true )
+	{
+		object target;
+		
+		
+		target = radar(WingedGrabber);
+		if ( target == null )
+		{
+			motor(0, 0);  // stop
+			break;
+		}
+		
+		while (target == null)
+		{
+			turn(direction(target.position));
+			while(position.z<10){
+				jet(1);
+				wait(0.2);
+			}
+			motor(1,1);
+			jet(0);
+			if (position.z-topo(position) < 6)
+			{
+				jet(1);
+			}
+			
+			if (position.z-topo(position) > 9)
+			{
+				jet(-1);
+			}
+		}
+	}
+}

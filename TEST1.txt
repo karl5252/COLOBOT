@@ -1,0 +1,103 @@
+extern void object::TEST1()
+{
+	void GetTitanium()
+	{
+		    object item;
+		    
+		    item = radar(TitaniumOre);
+		    goto(item.position);
+		    grab();
+		    
+		    item = radar(Converter, 0, 360, 0, 1000, 1, FilterFriendly);
+		    goto(item.position);
+		    drop();
+		    move(-2.5);
+		    
+		    while((item = radar(Titanium, 0, 45, 0, 10)) == null) wait(0.1);
+		    goto(item.position);
+		    grab();
+	}
+	
+	void object::Build(int cat)
+	{
+		    GetTitanium();
+		    goto(space(this.position, 8, 50, 15));
+		    drop();
+		    build(cat);
+	}
+	
+	void GetCell()
+	{
+		    GetTitanium();
+		    
+		    object item = radar(PowerPlant, 0, 360, 0, 1000, 1, FilterFriendly);
+		    goto(item.position);
+		    drop();
+		    while(item.energyCell.category != PowerCell) wait(0.1);
+		    grab();
+	}
+	
+	void Research(int cat)
+	{
+		    GetCell();
+		    object item = radar(ResearchCenter, 0, 360, 0, 1000, 1, FilterFriendly);
+		    goto(item.position);
+		    drop();
+		    item.research(cat);
+		    //while(item.busy()) wait(0.1);
+	}
+	
+	object object::Factory(int cat, string program)
+	{
+		    GetTitanium();
+		    object item = radar(BotFactory, 0, 360, 0, 1000, 1, FilterFriendly);
+		    goto(item.position);
+		    drop();
+		    move(-5);
+		    item.factory(cat, program);
+		    point start_pos = this.position;
+		    GetCell();
+		    goto(start_pos);
+		    turn(direction(item.position));
+		    while(item.busy()) wait(0.1);
+		    item = radar(cat, 0, 360, 0, 1000, 1, FilterFriendly);
+		    goto(item.position);
+		    drop();
+		    move(-10);
+		    return item;
+	}
+	
+	extern void object::KrzysHCodeBattleTestProgram()
+	{
+		    
+		    object item;
+		    
+		    item = radar(Titanium);
+		    goto(item.position);
+		    build(Converter);
+		    
+		    Build(PowerPlant);
+		    Build(ResearchCenter);
+		    Research(ResearchShooter);
+		    Build(BotFactory);
+		    item = Factory(WheeledShooter, progfunc("Shooter"));
+		    camerafocus(item);
+	}
+	
+	public void object::Shooter()
+	{
+		    while(this.energyCell == null) continue;
+		    wait(2);
+		    move(-5);
+		    
+		    while(true) {
+			        object item = radar(Any, 0, 360, 0, 1000, 1, FilterEnemy);
+			        if(item == null) return;
+			        turn(direction(item.position));
+			        move(distance(this.position, item.position)-30);
+			        fire(1);
+			    }
+	}
+	
+	
+}

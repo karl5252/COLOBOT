@@ -1,0 +1,24 @@
+extern void object::Tytan1()
+{
+	while(true){
+		object item;
+		item = radar(TitaniumOre);
+		
+		goto(item.position);
+		grab();
+		object building;
+		building = radar(Converter);
+		goto(building.position);
+		drop();
+		move(-2);
+		wait (15);
+		move(2);
+		grab();
+		goto(space(position,6,50,6));
+		drop();
+		
+	}
+	
+	
+	
+}

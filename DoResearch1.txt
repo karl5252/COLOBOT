@@ -1,0 +1,28 @@
+extern void object::DoResearch_1()
+{
+	
+	
+	object item;
+	
+	item = radar(PowerCell);
+	
+	goto(item.position);
+	grab();
+	
+	item=radar(ResearchCenter);
+	goto(item.position);
+	drop();
+	message("Research Station powered up!", DisplayInfo);
+	item.research(ResearchTracked);
+	
+	
+}
+
+
+
+
+
+
+
+
+

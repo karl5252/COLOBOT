@@ -1,0 +1,162 @@
+extern void object::BUIDLERalpha()
+{    /*
+	workerDroneProtocolv1
+	1. check for titanium or titanium ore,
+	2. grab Titanium (grabtit function) or grab TitaniumOre and bring it to converter if none break,
+	3. find flatspace, gra Titanium and drop,
+	4. If available build: Converter, Bot Factory, ResearchCenter, CellFactory... ; check batteryLevel  else break loop,
+	5. Feed the furnace... (CollectTitanium v 10)
+	
+	
+	*/
+	
+	    
+	
+	GrabTit();
+	    goto(space(this.position, 8, 50, 15));
+	    drop();
+	    if (canbuild(Converter)) {
+		
+		 build(Converter);
+		 GrabTit(); 
+	}
+	    goto(space(this.position, 8, 50, 15));
+	    drop();
+	    if (canbuild(BotFactory)) {
+		
+		 build(BotFactory);
+		 BotMaker();
+		GrabTit();
+		 
+	}
+	    goto(space(this.position, 8, 50, 15));
+	    drop();
+	    if (canbuild(ResearchCenter)) { 
+		build(ResearchCenter);
+		DoResearch();
+		GrabTit();
+		
+	}
+	    goto(space(this.position, 8, 50, 15));
+	    drop();
+	    if (canbuild(RadarStation )) { build(RadarStation ); GrabTit(); }
+	    goto(space(this.position, 8, 50, 15));
+	    drop();
+	    if (canbuild(RepairCenter)) { build(RepairCenter);GrabTit(); }
+	    goto(space(this.position, 8, 50, 15));
+	    drop();
+	    if (canbuild(DefenseTower)) { build(DefenseTower);GrabTit(); }
+	    
+	    
+}
+    
+void BotMaker()
+{
+	object item;
+	item=radar(Titanium);
+	goto(item.position);
+	grab();
+	item=radar(BotFactory);
+	goto(item.position);
+	drop();
+	move(-2.5);
+	item.factory(TrackedGrabber);
+	
+	do
+	{
+		wait(1);              // poczekaj na kostkę tytanu
+		item = radar(TrackedGrabber, 0, 45, 0, 5);
+	}
+	while ( item == null );
+	item=radar(PowerCell);
+	goto(item.position);
+	grab();
+	item=radar(TrackedGrabber);
+	goto(item.position);
+	drop();
+	move(-3);
+	message("New Grabber ready!", DisplayInfo);       
+}
+    
+
+
+void GrabTit()
+{
+	object item;
+	item = radar(Titanium);
+	if (item == null) {
+		message("No TITANIUM on planet, waiting", DisplayInfo);
+		wait(1);
+		
+	} else {
+		goto(item.position);
+		grab();
+	}
+	
+	
+}
+void DoResearch()
+{
+	object item;
+	
+	item = radar(PowerCell);
+	
+	goto(item.position);
+	grab();
+	
+	item=radar(ResearchCenter);
+	goto(item.position);
+	drop();
+	message("Research Station powered up!", DisplayInfo);
+	if(canresearch(ResearchTracked))
+	{
+		if(researched(ResearchTracked)){return;}
+		item.research(ResearchTracked);
+	}
+	if(canresearch(ResearchWinged))
+	{
+		if(researched(ResearchWinged)){return;}
+		item.research(ResearchWinged);
+	}
+	if(canresearch(ResearchShooter))
+	{
+		if(researched(ResearchShooter)){return;}
+		item.research(ResearchShooter);
+	}
+	if(canresearch(ResearchPhazerShooter))
+	{
+		if(researched(ResearchPhazerShooter)){return;}
+		item.research(ResearchPhazerShooter);
+	}
+	if(canresearch(ResearchThumper))
+	{
+		if(researched(ResearchThumper)){return;}
+		item.research(ResearchThumper);
+	}
+	if(canresearch(ResearchShielder))
+	{
+		if(researched(ResearchShielder)){return;}
+		item.research(ResearchShielder);
+	}
+	if(canresearch(ResearchDefenseTower))
+	{
+		if(researched(ResearchDefenseTower)){return;}
+		item.research(ResearchDefenseTower);
+	}
+	if(canresearch(ResearchNuclearPlant))
+	{
+		if(researched(ResearchNuclearPlant)){return;}
+		item.research(ResearchNuclearPlant);
+	}
+	
+	
+	
+	/*ResearchTracked       Tracked bots (e.g. tracked grabber)
+	ResearchWinged        Winged bots (e.g. winged grabber)
+	ResearchShooter       Bots with cannon (e.g. tracked shooter)
+	ResearchPhazerShooter Phazer shooter
+	ResearchThumper       Thumper
+	ResearchShielder      Shielder
+	ResearchDefenseTower  Defense tower
+	ResearchNuclearPlant  Nuclear plant*/
+} 

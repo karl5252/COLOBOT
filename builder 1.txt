@@ -1,0 +1,8 @@
+extern void object::Nowy()
+{
+	
+	object item = radar(Titanium);
+	 goto(item.position);
+	 build(RadarStation);
+	
+}

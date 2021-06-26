@@ -1,0 +1,574 @@
+extern void object::Quartermaster_Prime()
+{    /*
+	Alpha version
+	workerDroneProtocolv1
+	1. check for titanium or titanium ore,
+	2. grab Titanium (grabtit function) or grab TitaniumOre and bring it to converter if none break,
+	3. find flatspace with enough space to build required building, grab Titanium and drop,
+	4. If available build: Converter, Bot Factory, ResearchCenter, CellFactory... ; check batteryLevel  else break loop,
+	5.  build first bot to help (CollectTitanium6), add bot to array of friendlies
+	6. build service bot (change power source/ retrieve)
+	7. build sniffer (Sniffer2)
+	-------------------------
+	remember to rename methods as they become public- to avoid blockade
+	
+	
+	
+	
+	point start=position;
+	float q;
+	q=flatground(position,100);
+	    //message("Promień="+q+"metrów");*/
+	if (load!=null) {
+		drop();
+		 
+	}  
+	//Builder(Derrick);
+	//Builder(Derrick);
+	//Builder(Derrick);
+	//Builder(PowerPlant);
+	//Builder(PowerStation); 
+	//Builder(Converter);
+	//Builder(BotFactory);
+	//BotMaker(WingedShooter);
+	//Builder(ExchangePost);
+	//Builder(RadarStation);
+	//Builder(RepairCenter);
+	//Builder(PowerStation);
+	//Builder(ResearchCenter);
+	//Builder(PowerPlant);
+	//DoResearch(ResearchNuclearPlant);
+	//Builder(NuclearPlant);
+	//Builder(AutoLab);
+	//Builder(ExchangePost);*/
+	//BotMaker(TrackedShooter, "ActiveKiller3");
+	//BotMaker(TrackedShooter, "ActiveKiller3");
+	//BatLev(0.5);
+	    
+	   
+	  
+	    
+	    
+}
+    
+void object:: BotMaker(int cat, string program)
+{
+	object titaniumCube, botFactory,powerCell, recharge;
+	
+	titaniumCube=radar(Titanium);
+	botFactory=radar(BotFactory);
+	powerCell=radar(PowerCell);
+	recharge=radar(PowerStation);
+	if (botFactory!=null)
+	{
+		goto(titaniumCube.position);
+		grab();
+		goto(botFactory.position);
+		move(1);
+		drop(InFront);
+		move(-3);
+		botFactory.factory(cat, program);
+		wait(25);
+		goto(powerCell.position);
+		grab();
+		if(this.load.energyLevel!=1){
+			if(PowerStation==1){
+				goto(recharge.position);
+				while(this.load.energyLevel!=1){
+					wait(0.1);
+				}
+			}
+			
+		}
+		goto(botFactory.position);
+		drop();
+		move(-2);
+		turn(90);
+		move(5);
+		turn(-90);
+		move(5);
+		
+		 
+		message("New unit ready!" + cat, DisplayInfo);
+		BatLev(0.2);    
+	}else{
+		message("Unit not available, terminating", DisplayInfo);
+	}
+	   
+}
+void GrabTit()
+{
+	object item;
+	item = radar(Titanium);
+	
+	
+	if (item == null) {
+		message("No TITANIUM on planet surface is left", DisplayInfo);
+		wait(1);
+		return;
+		
+	} else {
+		
+		
+		goto(item.position);
+		grab();
+		BatLev(0.2);
+	}
+	
+	
+}
+
+void object::Builder(int cat)
+{ 
+	float reqRadius;
+	float availableRadius;
+	point buildingSite;
+	int dist;
+	object[] items;
+	object digSite;
+	
+	if (canbuild(cat)){
+		object[] items = radarall(Any,360,360,0,12,FilterOnlyLanding);
+		
+		GrabTit();
+		switch(cat)
+		{
+			case BotFactory: reqRadius = 7.5; break;
+			case ResearchCenter:  reqRadius= 5; break; 
+			case  RadarStation:  reqRadius= 2.5; break;  
+			case  ExchangePost:  reqRadius= 2.5; break;    
+			case  RepairCenter:   reqRadius= 6; break;    
+			case  DefenseTower: reqRadius= 3.5; break; 
+			case  AutoLab:   reqRadius= 6;  break; 
+			case  NuclearPlant:  reqRadius= 10;  break;   
+			case  Converter: reqRadius= 6; break;
+			case  PowerCaptor: reqRadius= 10; break;      
+			case  Derrick:   reqRadius= 2.5; break;
+			case  PowerStation:reqRadius= 6; break;
+			case  PowerPlant:reqRadius= 4;  break;
+			default: message("Building category does not match", DisplayWarning);break;
+		}
+		
+		message(reqRadius);
+		for (int i = 0; i < sizeof(items); ++i)
+		{
+			   // message(items[i].id)
+			
+			point units = items[i].position;
+			 dist = round(distance2d(this.position, units));
+		}
+		if(cat == Derrick){
+			digSite=radar(TitaniumSpot);
+			if(digSite!=null){
+				goto(digSite.position);
+			}
+			digSite=radar(UraniumSpot);
+			if(digSite!=null){
+				goto(digSite.position);
+			}
+		}else if(cat == PowerStation){
+			digSite=radar(PowerSpot);
+			if(digSite!=null){
+				goto(digSite.position);
+			}
+		}else if(cat == PowerPlant){
+			digSite=radar(PowerSpot);
+			if(digSite!=null){
+				goto(digSite.position);
+			}
+		}else{
+			buildingSite = flatspace ( this.position, reqRadius, 0, 200, dist );
+			goto(buildingSite);
+		}
+		drop();
+		build(cat);
+		//BatLev(0.2);
+	}else{
+		message( cat + " Not available on this planet", DisplayWarning);
+	}
+	
+	
+	//flatground (this.position, reqRadius);
+	//message(availableRadius);
+	
+}
+
+
+    
+
+
+void checkSpot()
+{
+	
+}
+
+
+/*int CalculateSpaceRequired(object building)
+{
+	int reqRadius;
+	switch (building.category)
+	{
+		case BotFactory: reqRadius= 7.5; break;      
+		case ResearchCenter:  reqRadius= 5; break;  
+		case RadarStation:   reqRadius= 2.5; break;  
+		case ExchangePost:   reqRadius= 2.5; break;    
+		case RepairCenter:   reqRadius= 6; break;   
+		case DefenseTower: reqRadius= 3.5; break;
+		case AutoLab:   reqRadius= 6; break;          
+		case PowerStation: reqRadius= 6; break;     
+		case PowerPlant:   reqRadius= 4; break;      
+		case NuclearPlant:  reqRadius= 10; break;    
+		case Converter: reqRadius= 6; break;        
+		case Derrick:   reqRadius= 2.5; break;       
+		case PowerCaptor: reqRadius= 10; break;
+		default: message("Not on the list", DisplayError);
+	}
+	
+	message(reqRadius);
+}
+*/
+void object:: CreCell()
+{
+	    object item = radar(PowerPlant, 0, 360, 0, 1000, 1, FilterFriendly);
+	if(item!=null){
+		GrabTit(); 
+		goto(item.position);
+		    drop();
+		    while(item.energyCell.category != PowerCell) wait(0.1);
+		    grab();
+		    goto(space(item.position));    // go to free space
+		    drop();                   // drop cell
+		
+		
+	}else{
+		message("Missing Power Plant");
+		return;
+	} 
+	 
+	    
+	    
+}
+/*void object::GoResearch(int what)
+{
+	GetPowerCell();
+	object item = RadarFriendly(ResearchCenter);
+	goto(item.position);
+	while(item.busy()) wait(0.05);
+	if (item.energyCell != null)
+	{
+		drop(Behind);
+		grab();
+		turn(90);
+		drop();
+		turn(-90);
+		grab(Behind);
+	}
+	drop();
+	item.research(what);
+}*/
+void DoResearch(int cat)
+{
+	object resCenter;
+	object powerCell;
+	object recharge;
+	
+	powerCell=radar(PowerCell);
+	
+	
+	goto(powerCell.position);
+	grab();
+	if(powerCell.energyLevel<1){
+		recharge=radar(PowerStation);
+		
+		if(recharge!=null)
+		{
+			goto(recharge.position);
+			while(powerCell.energyLevel!=1)
+			{
+				wait(5);
+				continue;
+			}
+		}
+		
+		
+	}
+	else{
+		resCenter = radar(ResearchCenter);
+		goto(resCenter.position);
+		while(resCenter.busy()) wait(0.05);
+		if (resCenter.energyCell != null)
+		{
+			drop(Behind);
+			grab();
+			turn(90);
+			drop();
+			turn(-90);
+			grab(Behind);
+		}
+		drop();
+	}
+	
+	
+	if(canresearch(cat)==true){
+		if(researched(cat)==false){
+			errmode(0);
+			
+			resCenter.research(cat);
+			message("Research " + cat + " started");
+			errmode(1);
+			
+		}else{
+			message("Currently chosen research option is not available", DisplayInfo);
+			return;
+		}
+		
+	}
+}
+
+
+
+    
+   
+    
+    /*ResearchTracked       Tracked bots (e.g. tracked grabber)
+ResearchWinged        Winged bots (e.g. winged grabber)
+ResearchShooter       Bots with cannon (e.g. tracked shooter)
+ResearchPhazerShooter Phazer shooter
+ResearchThumper       Thumper
+ResearchShielder      Shielder
+ResearchDefenseTower  Defense tower
+ResearchNuclearPlant  Nuclear plant*/
+
+
+public void object:: BatLev(float en)
+{
+	object item;          
+	
+	if(energyCell.category==PowerCell and energyCell.energyLevel*10<en){
+		
+		item = radar(PowerStation); // look for station
+		goto(item.position);   // go to the power station
+		{
+			wait(0);
+		}
+		while ( this.energyCell.energyLevel < 1 )
+		{
+			wait(1);            // wait until recharged
+		}
+		message("Recharge completed");
+	}else if(energyCell.category==NuclearCell){
+		float batteryLevel = energyCell.energyLevel;
+		point here = this.position;
+		message("NuclearCell level: " + batteryLevel + "Last coordinates: " + here, DisplayInfo);
+		
+		return; //ignore command
+	}
+	
+}
+
+
+public void object::checkTemp()
+{
+	boolean overheat = false;
+	point safeSpot;
+	if(temperature > 0.8)
+	    overheat = true;
+	if(temperature < 0.2)
+	    overheat = false;
+	
+	if(overheat and topo(position) > 1)
+	{
+		safeSpot = flatspace ( this.position, 1, 1 );
+		goto(safeSpot,5);
+		jet(-1);
+	}
+	    
+	
+}
+
+
+
+
+public void object:: ShiLev(float en)
+{
+	
+	
+	if (shieldLevel<en)
+	{
+		object repStation;
+		repStation=radar(RepairCenter,FilterFriendly);
+		goto(repStation.position);
+		{
+			checkTemp();
+			wait(0);
+		}
+		while(shieldLevel<1)
+		{
+			wait(0);
+		}
+	} 
+	
+	
+}
+public void object::ActiveKiller3()
+{
+	
+	 if(energyCell == null){
+		wait(10);
+		move(-5);
+	}
+	while(true)
+	    {
+		        int i, list [];
+		
+		       
+		        i = 0;
+		        list[i++] = AlienAnt;
+		        list[i++] = AlienSpider;
+		        list[i++] = AlienWorm;
+		        list[i++] = AlienWasp;
+		       
+		        while(radar(list) != null)
+		        {
+			            object enemy = radar(list);
+			           
+			            if(enemy.category == list[3])
+			            {
+				                ActiveWaspKiller();
+				            }
+			            else
+			            {
+				                ActiveLandKiller();
+				            }
+			        }
+		       
+		        wait(1);
+		    }
+}
+
+public void object::ActiveWaspKiller()
+
+{   BatLev(0.2);
+	ShiLev(0.5);
+	    while(radar(AlienWasp) != null)
+	    {
+		        object wasp = radar(AlienWasp);
+		        float h, d, dir;
+		       
+		        if(altitude < wasp.altitude)
+		        {
+			            jet(0.4);
+			        }
+		               
+		        if(altitude > wasp.altitude)
+		        {
+			            jet(-0.4);
+			        }
+		       
+		        h = wasp.position.z - position.z;
+		        d = distance2d(position, wasp.position);
+		       
+		        aim(atan(h/d));
+		       
+		        dir = direction(wasp.position);
+		       
+		        if(dir > 0)
+		        {
+			            motor(1-dir/40, 1);
+			        }
+		       
+		        if(dir < 0)
+		        {
+			            motor(1, 1+dir/40);
+			        }
+		       
+		        if(distance(position, wasp.position) < 40)
+		        {
+			            if(dir < 5 && dir > -5)
+			            {
+				                fire(0.1);
+				                checkTemp();
+				                BatLev(0.2);
+				                wait(0.5);
+				            }
+			        }
+		       
+		        
+		BatLev(0.2);
+		ShiLev(0.5);
+		    }
+}
+
+public void object::ActiveLandKiller()
+{
+	    int list[], i = 0;
+	
+	   
+	    list[i++] = AlienAnt;
+	    list[i++] = AlienSpider;
+	    list[i++] = AlienWorm;
+	
+	
+	   
+	    while(radar(list) != null)
+	    {
+		        object enemy = radar(list);
+		        float h, d, dir, posZ;
+		       
+		                   posZ = position.z - topo(position);
+		
+		        if(posZ < 10)
+		        {
+			            jet(0.3);
+			        }
+		
+		                   posZ = position.z - topo(position);
+		       
+		        if(posZ > 15)
+		        {
+			            jet(-0.3);
+			        }
+		       
+		        h = enemy.position.z - position.z;
+		        d = distance2d(position, enemy.position);
+		       
+		        aim(atan(h/d));
+		       
+		        dir = direction(enemy.position);
+		       
+		        if(dir > 0)
+		        {
+			            motor(1-dir/60, 1);
+			        }
+		       
+		        if(dir < 0)
+		        {
+			            motor(1, 1+dir/60);
+			        }
+		       
+		        if(distance(position, enemy.position) < 40)
+		        {
+			            if(dir < 5 && dir > -5)
+			            {
+				                fire(0.1);
+				                checkTemp();
+				                BatLev(0.2);
+				                wait(0.1);
+				            }
+			           
+			            if(distance2d(position, enemy.position) < 10)
+			            {
+				                motor(1,1);
+				                wait(6);
+				                turn(dir);
+				                checkTemp();
+				                BatLev(0.2);
+				            }
+			        }
+		       
+		        
+		BatLev(0.2);
+		ShiLev(0.5);
+		    }
+} 
+

@@ -1,0 +1,28 @@
+extern void object::BotMaker()
+{
+	object item;
+	item=radar(Titanium);
+	goto(item.position);
+	grab();
+	item=radar(BotFactory);
+	goto(item.position);
+	drop();
+	move(-2.5);
+	item.factory(TrackedGrabber, "blackboxhunter.txt" );
+	
+	do
+	{
+		wait(1);              // poczekaj na kostkę tytanu
+		item = radar(TrackedGrabber, 0, 45, 0, 5);
+	}
+	while ( item == null );
+	item=radar(PowerCell);
+	goto(item.position);
+	grab();
+	item=radar(TrackedGrabber);
+	goto(item.position);
+	drop();
+	move(-3);       
+	
+	
+}

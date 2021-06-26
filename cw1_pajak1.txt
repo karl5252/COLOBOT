@@ -1,0 +1,11 @@
+extern void object::Pająk1()
+{
+	object item;
+	while(true){
+		item=radar(AlienSpider);
+		turn(direction(item.position));
+		fire(1);
+	}
+	
+	
+}

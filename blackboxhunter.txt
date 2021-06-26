@@ -1,0 +1,19 @@
+extern void object::BlackBoxHunter()
+{
+	object start;
+	start= radar(SpaceShip);
+	object item;
+	item = radar(BlackBox);
+	
+	goto(item.position);
+	grab();
+	message("I`ve got it! Be right back!");
+	
+	goto(start.position);
+	drop();
+	move(-1);
+	message("Object secured!");
+	
+	
+	
+}

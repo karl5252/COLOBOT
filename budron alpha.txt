@@ -1,0 +1,49 @@
+extern void object::BUIDLERalpha()
+{    /*
+	workerDroneProtocolv1
+	1. check for titanium or titanium ore,
+	2. grab Titanium (grabtit function) or grab TitaniumOre and bring it to converter if none break,
+	3. find flatspace, gra Titanium and drop,
+	4. If available build: Converter, Bot Factory, ResearchCenter, CellFactory... ; check batteryLevel  else break loop,
+	5. Feed the furnace... (CollectTitanium v 10)
+	
+	
+	*/
+	
+	    
+	
+	GrabTit();
+	    goto(space(this.position, 8, 50, 15));
+	    drop();
+	    if (canbuild(Converter)) {
+		
+		 build(Converter); 
+	}
+	    if (canbuild(BotFactory)) { build(BotFactory); }
+	    if (canbuild(ResearchCenter)) { build(ResearchCenter);}
+	    if (canbuild(RadarStation )) { build(RadarStation ); }
+	    if (canbuild(RepairCenter)) { build(RepairCenter); }
+	    
+	    
+}
+    
+
+    
+
+
+void GrabTit()
+{
+	object item;
+	item = radar(Titanium);
+	if (item == null) {
+		message("No TITANIUM on planet, waiting", DisplayInfo);
+		wait(1);
+		
+	} else {
+		goto(item.position);
+		grab();
+	}
+	
+	
+}
+ 
